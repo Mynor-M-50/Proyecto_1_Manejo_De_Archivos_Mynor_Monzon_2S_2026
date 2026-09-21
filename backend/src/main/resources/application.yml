@@ -4,6 +4,7 @@ spring:
     username: postgres
     password: mynormonzon50
   jpa:
+    open-in-view: false
     hibernate:
       ddl-auto: validate
     properties:
@@ -15,3 +16,7 @@ spring:
 
 server:
   port: 8080
+
+jwt:
+  secret: "6TlfJ+r9HDvzduJ6BP3Bf0K74ZfD8vcMuPW3JnVaOWo="
+  expiration-ms: 28800000
