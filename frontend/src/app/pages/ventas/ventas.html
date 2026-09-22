@@ -1,0 +1,99 @@
+<div class="encabezado">
+  <div>
+    <h1>Ventas</h1>
+    <p class="subtitulo">Historial comercial y facturas</p>
+  </div>
+  <a class="btn" routerLink="/ventas/nueva">Nueva venta</a>
+</div>
+
+@if (error()) { <div class="alerta alerta-error">{{ error() }}</div> }
+
+<div class="tarjeta">
+  <div class="filtros">
+    <div class="campo">
+      <label>Desde</label>
+      <input type="date" [value]="desde()" (change)="desde.set(valor($event))" />
+    </div>
+    <div class="campo">
+      <label>Hasta</label>
+      <input type="date" [value]="hasta()" (change)="hasta.set(valor($event))" />
+    </div>
+    <div class="campo">
+      <label>Cliente</label>
+      <select (change)="cambiarCliente($event)">
+        <option value="" [selected]="idCliente() === null">Todos</option>
+        @for (c of clientes(); track c.idCliente) {
+          <option [value]="c.idCliente" [selected]="idCliente() === c.idCliente">{{ c.nombre }}</option>
+        }
+      </select>
+    </div>
+    <button class="btn" (click)="buscar()">Buscar</button>
+    <button class="btn btn-secundario" (click)="limpiar()">Limpiar</button>
+  </div>
+
+  <div class="tabla-contenedor">
+    <table>
+      <thead>
+        <tr>
+          <th>Factura</th>
+          <th>Fecha</th>
+          <th>Cliente</th>
+          <th>Vendedor</th>
+          <th class="num">Subtotal</th>
+          <th class="num">IVA</th>
+          <th class="num">Total</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (v of lista(); track v.idVenta) {
+          <tr class="seleccionable" [class.seleccionada]="seleccionada()?.idVenta === v.idVenta" (click)="seleccionar(v)">
+            <td>{{ v.numeroFactura }}</td>
+            <td>{{ v.fecha | date: 'dd/MM/yyyy HH:mm' }}</td>
+            <td>{{ v.cliente }}</td>
+            <td>{{ v.usuario }}</td>
+            <td class="num">{{ v.subtotal | currency: 'GTQ' : 'symbol-narrow' }}</td>
+            <td class="num">{{ v.iva | currency: 'GTQ' : 'symbol-narrow' }}</td>
+            <td class="num">{{ v.total | currency: 'GTQ' : 'symbol-narrow' }}</td>
+            <td class="num">
+              <button class="btn btn-secundario btn-chico" (click)="factura(v, $event)">PDF</button>
+            </td>
+          </tr>
+        } @empty {
+          <tr><td colspan="8" class="vacio">No hay ventas con los filtros seleccionados</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+@if (seleccionada(); as v) {
+  <div class="tarjeta">
+    <div class="encabezado">
+      <h2>Factura {{ v.numeroFactura }} - {{ v.cliente }} (NIT {{ v.nitCliente }})</h2>
+      <button class="btn" (click)="factura(v)">Ver factura PDF</button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Codigo</th>
+          <th>Producto</th>
+          <th class="num">Cantidad</th>
+          <th class="num">Precio</th>
+          <th class="num">Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (d of v.detalles; track d.idProducto) {
+          <tr>
+            <td>{{ d.codigo }}</td>
+            <td>{{ d.producto }}</td>
+            <td class="num">{{ d.cantidad }}</td>
+            <td class="num">{{ d.precioUnitario | currency: 'GTQ' : 'symbol-narrow' }}</td>
+            <td class="num">{{ d.subtotal | currency: 'GTQ' : 'symbol-narrow' }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

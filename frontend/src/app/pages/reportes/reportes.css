@@ -1,0 +1,8 @@
+.selector {
+  min-width: 300px;
+}
+
+.corto {
+  min-width: 100px !important;
+  width: 110px;
+}

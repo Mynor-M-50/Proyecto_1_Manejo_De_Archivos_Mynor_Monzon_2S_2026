@@ -1,0 +1,115 @@
+<h1>Inventario</h1>
+<p class="subtitulo">Metodo PEPS: las salidas consumen primero los lotes mas antiguos</p>
+
+@if (error()) { <div class="alerta alerta-error">{{ error() }}</div> }
+
+<div class="tarjeta">
+  <div class="filtros">
+    <div class="campo selector">
+      <label>Producto</label>
+      <select (change)="seleccionar($event)">
+        <option value="">Seleccione un producto...</option>
+        @for (p of productos(); track p.idProducto) {
+          <option [value]="p.idProducto">{{ p.codigo }} - {{ p.nombre }} (existencia {{ p.existenciaActual }})</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  @if (producto(); as p) {
+    <div class="rejilla">
+      <div class="indicador"><span>Existencia actual</span><strong>{{ p.existenciaActual }}</strong></div>
+      <div class="indicador"><span>Stock minimo</span><strong>{{ p.stockMinimo }}</strong></div>
+      <div class="indicador">
+        <span>Estado</span>
+        <strong>
+          @if (p.existenciaActual === 0) {
+            <span class="badge badge-peligro">Agotado</span>
+          } @else if (p.stockBajo) {
+            <span class="badge badge-alerta">Stock bajo</span>
+          } @else {
+            <span class="badge badge-exito">Normal</span>
+          }
+        </strong>
+      </div>
+    </div>
+  }
+</div>
+
+@if (producto()) {
+  <div class="tarjeta">
+    <h2>Lotes (orden de consumo PEPS)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Lote</th>
+          <th>Fecha de ingreso</th>
+          <th class="num">Cantidad inicial</th>
+          <th class="num">Disponible</th>
+          <th class="num">Costo unitario</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (l of lotes(); track l.idLote) {
+          <tr>
+            <td>{{ l.idLote }}</td>
+            <td>{{ l.fechaIngreso | date: 'dd/MM/yyyy HH:mm' }}</td>
+            <td class="num">{{ l.cantidadInicial }}</td>
+            <td class="num">{{ l.cantidadDisponible }}</td>
+            <td class="num">{{ l.costoUnitario | currency: 'GTQ' : 'symbol-narrow' }}</td>
+            <td>
+              @if (l.cantidadDisponible === 0) {
+                <span class="badge">Consumido</span>
+              } @else {
+                <span class="badge badge-exito">Disponible</span>
+              }
+            </td>
+          </tr>
+        } @empty {
+          <tr><td colspan="6" class="vacio">Este producto no tiene lotes</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tarjeta">
+    <h2>Historial de movimientos</h2>
+    <div class="tabla-contenedor">
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Tipo</th>
+            <th>Origen</th>
+            <th class="num">Cantidad</th>
+            <th class="num">Costo</th>
+            <th class="num">Anterior</th>
+            <th class="num">Nueva</th>
+            <th>Usuario</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (m of movimientos(); track m.idMovimiento) {
+            <tr>
+              <td>{{ m.fecha | date: 'dd/MM/yyyy HH:mm' }}</td>
+              <td>
+                <span class="badge" [class.badge-exito]="m.tipo === 'ENTRADA'" [class.badge-peligro]="m.tipo === 'SALIDA'">
+                  {{ m.tipo }}
+                </span>
+              </td>
+              <td>{{ m.origenTipo }} #{{ m.origenId }}</td>
+              <td class="num">{{ m.cantidad }}</td>
+              <td class="num">{{ m.costoUnitario | currency: 'GTQ' : 'symbol-narrow' }}</td>
+              <td class="num">{{ m.existenciaAnterior }}</td>
+              <td class="num">{{ m.existenciaNueva }}</td>
+              <td>{{ m.usuario }}</td>
+            </tr>
+          } @empty {
+            <tr><td colspan="8" class="vacio">Sin movimientos</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+}

@@ -1,0 +1,31 @@
+<div class="shell">
+  <aside class="sidebar">
+    <div class="marca">
+      <span class="marca-logo">ME</span>
+      <div>
+        <strong>Mini ERP</strong>
+        <small>Muebles hogar y oficina</small>
+      </div>
+    </div>
+
+    <nav>
+      @for (opcion of opciones(); track opcion.ruta) {
+        <a [routerLink]="opcion.ruta" routerLinkActive="activo">{{ opcion.texto }}</a>
+      }
+    </nav>
+  </aside>
+
+  <div class="principal">
+    <header class="topbar">
+      <div class="usuario">
+        <strong>{{ auth.sesion()?.nombreCompleto }}</strong>
+        <span class="badge">{{ auth.area() }}</span>
+      </div>
+      <button class="btn btn-secundario" (click)="salir()">Cerrar sesion</button>
+    </header>
+
+    <main class="contenido">
+      <router-outlet />
+    </main>
+  </div>
+</div>

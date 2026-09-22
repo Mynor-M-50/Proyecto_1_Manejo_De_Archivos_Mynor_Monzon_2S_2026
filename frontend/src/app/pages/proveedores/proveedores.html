@@ -1,0 +1,72 @@
+<div class="encabezado">
+  <div>
+    <h1>Proveedores</h1>
+    <p class="subtitulo">Empresas que abastecen los productos</p>
+  </div>
+  <button class="btn" (click)="nuevo()">Nuevo proveedor</button>
+</div>
+
+@if (error()) { <div class="alerta alerta-error">{{ error() }}</div> }
+@if (exito()) { <div class="alerta alerta-exito">{{ exito() }}</div> }
+
+@if (mostrarForm()) {
+  <form class="tarjeta" [formGroup]="form" (ngSubmit)="guardar()">
+    <h2>{{ editando() ? 'Editar proveedor' : 'Nuevo proveedor' }}</h2>
+    <div class="formulario">
+      <div class="campo"><label>NIT *</label><input formControlName="nit" /></div>
+      <div class="campo"><label>Nombre *</label><input formControlName="nombre" /></div>
+      <div class="campo"><label>Contacto</label><input formControlName="contacto" /></div>
+      <div class="campo"><label>Telefono</label><input formControlName="telefono" /></div>
+      <div class="campo"><label>Email</label><input formControlName="email" /></div>
+      <div class="campo"><label>Direccion</label><input formControlName="direccion" /></div>
+    </div>
+    <div class="botones-form">
+      <button class="btn" type="submit">Guardar</button>
+      <button class="btn btn-secundario" type="button" (click)="cancelar()">Cancelar</button>
+    </div>
+  </form>
+}
+
+<div class="tarjeta">
+  <div class="tabla-contenedor">
+    <table>
+      <thead>
+        <tr>
+          <th>NIT</th>
+          <th>Nombre</th>
+          <th>Contacto</th>
+          <th>Telefono</th>
+          <th>Email</th>
+          <th>Estado</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (p of lista(); track p.idProveedor) {
+          <tr>
+            <td>{{ p.nit }}</td>
+            <td>{{ p.nombre }}</td>
+            <td>{{ p.contacto }}</td>
+            <td>{{ p.telefono }}</td>
+            <td>{{ p.email }}</td>
+            <td>
+              <span class="badge" [class.badge-exito]="p.estado" [class.badge-peligro]="!p.estado">
+                {{ p.estado ? 'Activo' : 'Inactivo' }}
+              </span>
+            </td>
+            <td>
+              <div class="acciones">
+                <button class="btn btn-secundario btn-chico" (click)="editar(p)">Editar</button>
+                <button class="btn btn-chico" [class.btn-peligro]="p.estado" (click)="cambiarEstado(p)">
+                  {{ p.estado ? 'Desactivar' : 'Activar' }}
+                </button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr><td colspan="7" class="vacio">No hay proveedores</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

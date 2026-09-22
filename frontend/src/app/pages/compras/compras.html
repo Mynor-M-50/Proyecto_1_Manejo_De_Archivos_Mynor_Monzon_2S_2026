@@ -1,0 +1,81 @@
+<div class="encabezado">
+  <div>
+    <h1>Compras</h1>
+    <p class="subtitulo">Cada compra aumenta la existencia y crea un lote de inventario</p>
+  </div>
+  <a class="btn" routerLink="/compras/nueva">Nueva compra</a>
+</div>
+
+@if (error()) { <div class="alerta alerta-error">{{ error() }}</div> }
+
+<div class="tarjeta">
+  <div class="filtros">
+    <div class="campo">
+      <label>Desde</label>
+      <input type="date" [value]="desde()" (change)="desde.set(valor($event))" />
+    </div>
+    <div class="campo">
+      <label>Hasta</label>
+      <input type="date" [value]="hasta()" (change)="hasta.set(valor($event))" />
+    </div>
+    <button class="btn" (click)="buscar()">Buscar</button>
+    <button class="btn btn-secundario" (click)="limpiar()">Limpiar</button>
+  </div>
+
+  <div class="tabla-contenedor">
+    <table>
+      <thead>
+        <tr>
+          <th>Documento</th>
+          <th>Fecha</th>
+          <th>Proveedor</th>
+          <th>Registro</th>
+          <th class="num">Productos</th>
+          <th class="num">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (c of lista(); track c.idCompra) {
+          <tr class="seleccionable" [class.seleccionada]="seleccionada()?.idCompra === c.idCompra" (click)="seleccionar(c)">
+            <td>{{ c.numeroDoc }}</td>
+            <td>{{ c.fecha | date: 'dd/MM/yyyy HH:mm' }}</td>
+            <td>{{ c.proveedor }}</td>
+            <td>{{ c.usuario }}</td>
+            <td class="num">{{ c.detalles.length }}</td>
+            <td class="num">{{ c.total | currency: 'GTQ' : 'symbol-narrow' }}</td>
+          </tr>
+        } @empty {
+          <tr><td colspan="6" class="vacio">No hay compras en el rango seleccionado</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+@if (seleccionada(); as c) {
+  <div class="tarjeta">
+    <h2>Detalle de la compra {{ c.numeroDoc }} - {{ c.proveedor }}</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Codigo</th>
+          <th>Producto</th>
+          <th class="num">Cantidad</th>
+          <th class="num">Costo unitario</th>
+          <th class="num">Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (d of c.detalles; track d.idProducto) {
+          <tr>
+            <td>{{ d.codigo }}</td>
+            <td>{{ d.producto }}</td>
+            <td class="num">{{ d.cantidad }}</td>
+            <td class="num">{{ d.costoUnitario | currency: 'GTQ' : 'symbol-narrow' }}</td>
+            <td class="num">{{ d.subtotal | currency: 'GTQ' : 'symbol-narrow' }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

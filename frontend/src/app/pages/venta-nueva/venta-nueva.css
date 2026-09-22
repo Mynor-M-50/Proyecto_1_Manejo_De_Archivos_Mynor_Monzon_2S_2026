@@ -1,0 +1,12 @@
+.col-num {
+  width: 130px;
+}
+
+input.excede {
+  border-color: var(--peligro);
+  background: #fef2f2;
+}
+
+.exito {
+  border-left: 4px solid var(--exito);
+}

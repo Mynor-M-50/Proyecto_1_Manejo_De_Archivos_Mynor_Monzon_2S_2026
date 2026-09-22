@@ -1,0 +1,25 @@
+<div class="fondo">
+  <form class="caja" [formGroup]="form" (ngSubmit)="ingresar()">
+    <div class="logo">ME</div>
+    <h1>Mini ERP</h1>
+    <p class="subtitulo">Muebles para hogar y oficina</p>
+
+    @if (error()) {
+      <div class="alerta alerta-error">{{ error() }}</div>
+    }
+
+    <div class="campo">
+      <label for="username">Usuario</label>
+      <input id="username" formControlName="username" autocomplete="username" />
+    </div>
+
+    <div class="campo">
+      <label for="password">Contrasena</label>
+      <input id="password" type="password" formControlName="password" autocomplete="current-password" />
+    </div>
+
+    <button class="btn" type="submit" [disabled]="cargando()">
+      {{ cargando() ? 'Ingresando...' : 'Ingresar' }}
+    </button>
+  </form>
+</div>

@@ -1,0 +1,76 @@
+<div class="encabezado">
+  <div>
+    <h1>Usuarios</h1>
+    <p class="subtitulo">Cada usuario pertenece a un area que define sus permisos</p>
+  </div>
+  <button class="btn" (click)="nuevo()">Nuevo usuario</button>
+</div>
+
+@if (error()) { <div class="alerta alerta-error">{{ error() }}</div> }
+@if (exito()) { <div class="alerta alerta-exito">{{ exito() }}</div> }
+
+@if (mostrarForm()) {
+  <form class="tarjeta" [formGroup]="form" (ngSubmit)="guardar()">
+    <h2>Nuevo usuario</h2>
+    <div class="formulario">
+      <div class="campo"><label>Nombre completo *</label><input formControlName="nombreCompleto" /></div>
+      <div class="campo"><label>Usuario *</label><input formControlName="username" autocomplete="off" /></div>
+      <div class="campo">
+        <label>Contrasena * (minimo 6)</label>
+        <input type="password" formControlName="password" autocomplete="new-password" />
+      </div>
+      <div class="campo">
+        <label>Area *</label>
+        <select formControlName="idArea">
+          <option [ngValue]="0" disabled>Seleccione...</option>
+          @for (a of areas(); track a.idArea) {
+            <option [ngValue]="a.idArea">{{ a.nombre }}</option>
+          }
+        </select>
+      </div>
+    </div>
+    <div class="botones-form">
+      <button class="btn" type="submit">Guardar</button>
+      <button class="btn btn-secundario" type="button" (click)="cancelar()">Cancelar</button>
+    </div>
+  </form>
+}
+
+<div class="tarjeta">
+  <div class="tabla-contenedor">
+    <table>
+      <thead>
+        <tr>
+          <th>Usuario</th>
+          <th>Nombre</th>
+          <th>Area</th>
+          <th>Creado</th>
+          <th>Estado</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (u of lista(); track u.idUsuario) {
+          <tr>
+            <td>{{ u.username }}</td>
+            <td>{{ u.nombreCompleto }}</td>
+            <td><span class="badge">{{ u.area }}</span></td>
+            <td>{{ u.fechaCreacion | date: 'dd/MM/yyyy' }}</td>
+            <td>
+              <span class="badge" [class.badge-exito]="u.estado" [class.badge-peligro]="!u.estado">
+                {{ u.estado ? 'Activo' : 'Inactivo' }}
+              </span>
+            </td>
+            <td class="num">
+              <button class="btn btn-chico" [class.btn-peligro]="u.estado" (click)="cambiarEstado(u)">
+                {{ u.estado ? 'Desactivar' : 'Activar' }}
+              </button>
+            </td>
+          </tr>
+        } @empty {
+          <tr><td colspan="6" class="vacio">No hay usuarios</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

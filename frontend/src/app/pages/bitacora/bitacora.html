@@ -1,0 +1,54 @@
+<h1>Bitacora</h1>
+<p class="subtitulo">Principales interacciones de los usuarios en los modulos del sistema</p>
+
+@if (error()) { <div class="alerta alerta-error">{{ error() }}</div> }
+
+<div class="tarjeta">
+  <div class="filtros">
+    <div class="campo">
+      <label>Desde</label>
+      <input type="date" [value]="desde()" (change)="desde.set(valor($event))" />
+    </div>
+    <div class="campo">
+      <label>Hasta</label>
+      <input type="date" [value]="hasta()" (change)="hasta.set(valor($event))" />
+    </div>
+    <button class="btn" (click)="buscar()">Buscar</button>
+    <div class="campo">
+      <label>Modulo</label>
+      <select (change)="modulo.set(valor($event))">
+        <option value="">Todos</option>
+        @for (m of modulos(); track m) {
+          <option [value]="m">{{ m }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <div class="tabla-contenedor">
+    <table>
+      <thead>
+        <tr>
+          <th>Fecha y hora</th>
+          <th>Usuario</th>
+          <th>Modulo</th>
+          <th>Accion</th>
+          <th>Descripcion</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (r of filtrados(); track r.idLog) {
+          <tr>
+            <td>{{ r.fechaHora | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+            <td>{{ r.usuario }}</td>
+            <td><span class="badge">{{ r.modulo }}</span></td>
+            <td>{{ r.accion }}</td>
+            <td>{{ r.descripcion }}</td>
+          </tr>
+        } @empty {
+          <tr><td colspan="5" class="vacio">Sin registros</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,1 +1,329 @@
-/* You can add global styles to this file, and also import other style files */
+/* Estilos globales del Mini ERP */
+
+:root {
+  --primario: #2563eb;
+  --primario-oscuro: #1d4ed8;
+  --oscuro: #1e293b;
+  --fondo: #f1f5f9;
+  --borde: #e2e8f0;
+  --texto: #0f172a;
+  --suave: #64748b;
+  --exito: #16a34a;
+  --peligro: #dc2626;
+  --alerta: #d97706;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--fondo);
+  color: var(--texto);
+  font-size: 14px;
+}
+
+h1 {
+  font-size: 22px;
+  margin: 0 0 4px;
+}
+
+h2 {
+  font-size: 17px;
+  margin: 0 0 14px;
+}
+
+.subtitulo {
+  color: var(--suave);
+  margin: 0 0 22px;
+}
+
+/* Encabezado de pagina con titulo a la izquierda y acciones a la derecha */
+.encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+/* Tarjetas */
+.tarjeta {
+  background: #fff;
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.rejilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.indicador {
+  background: #fff;
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  padding: 18px;
+}
+
+.indicador span {
+  color: var(--suave);
+  font-size: 13px;
+}
+
+.indicador strong {
+  display: block;
+  font-size: 26px;
+  margin-top: 6px;
+}
+
+/* Botones */
+.btn {
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  background: var(--primario);
+  color: #fff;
+  white-space: nowrap;
+}
+
+.btn:hover {
+  background: var(--primario-oscuro);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-secundario {
+  background: #fff;
+  color: var(--texto);
+  border: 1px solid var(--borde);
+}
+
+.btn-secundario:hover {
+  background: var(--fondo);
+}
+
+.btn-peligro {
+  background: var(--peligro);
+}
+
+.btn-peligro:hover {
+  background: #b91c1c;
+}
+
+.btn-chico {
+  padding: 4px 10px;
+  font-size: 13px;
+}
+
+.acciones {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* Formularios */
+.formulario {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.campo label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+}
+
+input,
+select,
+textarea {
+  font: inherit;
+  padding: 8px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #fff;
+  width: 100%;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid #bfdbfe;
+  border-color: var(--primario);
+}
+
+input.ng-invalid.ng-touched,
+select.ng-invalid.ng-touched {
+  border-color: var(--peligro);
+}
+
+.botones-form {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+/* Filtros encima de las tablas */
+.filtros {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.filtros .campo {
+  min-width: 160px;
+}
+
+/* Tablas */
+.tabla-contenedor {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  text-align: left;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--suave);
+  background: #f8fafc;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--borde);
+}
+
+td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--borde);
+  vertical-align: middle;
+}
+
+tr.seleccionable {
+  cursor: pointer;
+}
+
+tr.seleccionable:hover,
+tr.seleccionada {
+  background: #eff6ff;
+}
+
+.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Etiquetas de estado */
+.badge {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.badge-exito {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.badge-peligro {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.badge-alerta {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+/* Mensajes */
+.alerta {
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+}
+
+.alerta-error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.alerta-exito {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.vacio {
+  text-align: center;
+  color: var(--suave);
+  padding: 24px;
+}
+
+/* Pestanas */
+.pestanas {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--borde);
+  margin-bottom: 20px;
+}
+
+.pestanas button {
+  background: none;
+  border: none;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--suave);
+  border-bottom: 2px solid transparent;
+}
+
+.pestanas button.activa {
+  color: var(--primario);
+  border-bottom-color: var(--primario);
+  font-weight: 600;
+}
+
+/* Totales de compra y venta */
+.totales {
+  margin-left: auto;
+  width: 280px;
+}
+
+.totales div {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+}
+
+.totales .total {
+  font-weight: 700;
+  font-size: 16px;
+  border-top: 1px solid var(--borde);
+  margin-top: 4px;
+  padding-top: 10px;
+}

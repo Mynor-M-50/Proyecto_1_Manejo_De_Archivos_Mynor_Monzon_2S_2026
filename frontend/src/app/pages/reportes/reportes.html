@@ -1,0 +1,110 @@
+<h1>Reportes</h1>
+<p class="subtitulo">Consulta de informacion comercial con filtros</p>
+
+<div class="pestanas">
+  @for (g of grupos; track g.id) {
+    <button [class.activa]="grupo()?.id === g.id" (click)="elegirGrupo(g)">{{ g.titulo }}</button>
+  }
+</div>
+
+@if (grupo(); as g) {
+  <div class="tarjeta">
+    <div class="filtros">
+      <div class="campo selector">
+        <label>Reporte</label>
+        <select (change)="cambiarReporte($event)">
+          @for (r of g.reportes; track r.id) {
+            <option [value]="r.id" [selected]="reporte()?.id === r.id">{{ r.titulo }}</option>
+          }
+        </select>
+      </div>
+
+      @if (reporte(); as r) {
+        @if (r.producto) {
+          <div class="campo selector">
+            <label>Producto</label>
+            <select (change)="idProducto.set(+valor($event) || null)">
+              <option value="">Seleccione...</option>
+              @for (p of productos(); track p.idProducto) {
+                <option [value]="p.idProducto">{{ p.codigo }} - {{ p.nombre }}</option>
+              }
+            </select>
+          </div>
+        }
+        @if (r.fechas) {
+          <div class="campo">
+            <label>Desde</label>
+            <input type="date" [value]="desde()" (change)="desde.set(valor($event))" />
+          </div>
+          <div class="campo">
+            <label>Hasta</label>
+            <input type="date" [value]="hasta()" (change)="hasta.set(valor($event))" />
+          </div>
+        }
+        @if (r.limite) {
+          <div class="campo corto">
+            <label>Cantidad</label>
+            <input type="number" min="1" max="100" [value]="limite()" (change)="limite.set(+valor($event) || 10)" />
+          </div>
+        }
+        @if (r.agrupacion) {
+          <div class="campo">
+            <label>Agrupar por</label>
+            <select (change)="agrupacion.set(valor($event))">
+              <option value="DIA">Dia</option>
+              <option value="SEMANA">Semana</option>
+              <option value="MES" selected>Mes</option>
+              <option value="ANIO">Anio</option>
+            </select>
+          </div>
+        }
+      }
+
+      <button class="btn" (click)="consultar()" [disabled]="cargando()">
+        {{ cargando() ? 'Consultando...' : 'Consultar' }}
+      </button>
+    </div>
+
+    @if (error()) { <div class="alerta alerta-error">{{ error() }}</div> }
+
+    @if (consultado()) {
+      <div class="tabla-contenedor">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              @for (c of columnas(); track c.campo) {
+                <th [class.num]="c.tipo === 'numero' || c.tipo === 'moneda'">{{ c.titulo }}</th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @for (fila of filas(); track $index) {
+              <tr>
+                <td>{{ $index + 1 }}</td>
+                @for (c of columnas(); track c.campo) {
+                  @switch (c.tipo) {
+                    @case ('moneda') {
+                      <td class="num">{{ $any(fila[c.campo]) | currency: 'GTQ' : 'symbol-narrow' }}</td>
+                    }
+                    @case ('numero') {
+                      <td class="num">{{ $any(fila[c.campo]) | number }}</td>
+                    }
+                    @case ('fecha') {
+                      <td>{{ $any(fila[c.campo]) | date: 'dd/MM/yyyy HH:mm' }}</td>
+                    }
+                    @default {
+                      <td>{{ fila[c.campo] }}</td>
+                    }
+                  }
+                }
+              </tr>
+            } @empty {
+              <tr><td [attr.colspan]="columnas().length + 1" class="vacio">Sin resultados para los filtros seleccionados</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+}

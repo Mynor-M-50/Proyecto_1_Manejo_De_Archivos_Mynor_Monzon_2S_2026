@@ -1,0 +1,101 @@
+<div class="encabezado">
+  <div>
+    <h1>Nueva venta</h1>
+    <p class="subtitulo">Las existencias se validan antes de completar la venta y se descuentan por PEPS</p>
+  </div>
+  <a class="btn btn-secundario" routerLink="/ventas">Volver</a>
+</div>
+
+@if (registrada(); as venta) {
+  <div class="tarjeta exito">
+    <h2>Venta registrada: factura {{ venta.numeroFactura }}</h2>
+    <p>
+      Cliente {{ venta.cliente }} - Total {{ venta.total | currency: 'GTQ' : 'symbol-narrow' }}
+    </p>
+    <div class="acciones">
+      <button class="btn" (click)="verFactura()">Ver factura PDF</button>
+      <button class="btn btn-secundario" (click)="otraVenta()">Registrar otra venta</button>
+      <a class="btn btn-secundario" routerLink="/ventas">Ir a ventas</a>
+    </div>
+  </div>
+} @else {
+  @if (error()) { <div class="alerta alerta-error">{{ error() }}</div> }
+
+  <form [formGroup]="form" (ngSubmit)="guardar()">
+    <div class="tarjeta">
+      <h2>Cliente</h2>
+      <div class="formulario">
+        <div class="campo">
+          <label>Cliente *</label>
+          <select formControlName="idCliente">
+            <option [ngValue]="0" disabled>Seleccione...</option>
+            @for (c of clientes(); track c.idCliente) {
+              <option [ngValue]="c.idCliente">{{ c.nombre }} - NIT {{ c.nit }}</option>
+            }
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="tarjeta">
+      <div class="encabezado">
+        <h2>Productos</h2>
+        <button class="btn btn-secundario" type="button" (click)="agregarLinea()">Agregar producto</button>
+      </div>
+
+      <table formArrayName="lineas">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th class="num">Disponible</th>
+            <th class="num">Precio</th>
+            <th class="col-num">Cantidad</th>
+            <th class="num">Subtotal</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (linea of lineas.controls; track linea; let i = $index) {
+            <tr [formGroupName]="i">
+              <td>
+                <select formControlName="idProducto">
+                  <option [ngValue]="0" disabled>Seleccione...</option>
+                  @for (p of disponibles(); track p.idProducto) {
+                    <option [ngValue]="p.idProducto">{{ p.codigo }} - {{ p.nombre }}</option>
+                  }
+                </select>
+              </td>
+              <td class="num">{{ producto(i)?.existenciaActual ?? '-' }}</td>
+              <td class="num">
+                @if (producto(i); as p) {
+                  {{ p.precioVenta | currency: 'GTQ' : 'symbol-narrow' }}
+                } @else { - }
+              </td>
+              <td>
+                <input type="number" min="1" formControlName="cantidad" [class.excede]="excede(i)" />
+              </td>
+              <td class="num">{{ subtotalLinea(i) | currency: 'GTQ' : 'symbol-narrow' }}</td>
+              <td class="num">
+                <button class="btn btn-secundario btn-chico" type="button" [disabled]="lineas.length === 1" (click)="quitarLinea(i)">
+                  Quitar
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      <div class="totales">
+        <div><span>Subtotal</span><span>{{ subtotal() | currency: 'GTQ' : 'symbol-narrow' }}</span></div>
+        <div><span>IVA (12%)</span><span>{{ iva() | currency: 'GTQ' : 'symbol-narrow' }}</span></div>
+        <div class="total"><span>Total</span><span>{{ total() | currency: 'GTQ' : 'symbol-narrow' }}</span></div>
+      </div>
+
+      <div class="botones-form">
+        <button class="btn" type="submit" [disabled]="guardando()">
+          {{ guardando() ? 'Registrando...' : 'Registrar venta' }}
+        </button>
+      </div>
+    </div>
+  </form>
+}
